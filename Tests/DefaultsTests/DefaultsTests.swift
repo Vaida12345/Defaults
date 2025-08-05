@@ -1,6 +1,23 @@
-import Testing
-@testable import Defaults
+//
+//  Defaults.swift
+//  Defaults
+//
+//  Created by Vaida on 2025-07-05.
+//
 
-@Test func example() async throws {
-    // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+import Testing
+import SwiftUI
+import Defaults
+
+
+private extension Defaults.Key where Value == Void {
+    
+    var password: Defaults.Key<String> {
+        .init("password", default: "none")
+    }
+    
+}
+
+@Test func defaultsTest() {
+    let value = Defaults.standard.password
 }
