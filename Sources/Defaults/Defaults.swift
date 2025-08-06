@@ -40,11 +40,34 @@ public struct Defaults {
     }
     
     /// Creates a user defaults object initialized with the defaults for the specified database name.
-    public static func suite(name: String) -> Defaults? {
+    public static func suite(named name: String) -> Defaults? {
         guard let userDefaults = UserDefaults(suiteName: name) else { return nil }
         return Defaults(userDefaults: userDefaults)
     }
     
+    
+    /// Removes the values associated with the given `keyPath`.
+    ///
+    /// This will remove the object associated with the key, and effectively reset the value to its `defaultValue`.
+    ///
+    /// > Tip:
+    /// > For keys with optional types, setting the key to `nil` will remove the value, similar to Swift dictionaries.
+    /// > ```swift
+    /// > Defaults.standard.password = nil
+    /// > ```
+    public func remove<T>(_ keyPath: KeyPath<Defaults.Key<Void>, Defaults.Key<T>>) {
+        let key = Key("", default: ())[keyPath: keyPath]
+        userDefaults.removeObject(forKey: key.identifier)
+    }
+    
+    
+    /// Use dynamic member to modify or retrieve a defaults.
+    ///
+    /// This is an implementation detail, and you should not interact with this subscript directly. You should access the values as instance properties.
+    ///
+    /// ```swift
+    /// let enabled = Defaults.standard.memorySaver
+    /// ```
     public subscript<T>(dynamicMember keyPath: KeyPath<Defaults.Key<Void>, Defaults.Key<T>>) -> T {
         get {
             let key = Key("", default: ())[keyPath: keyPath]
@@ -58,10 +81,43 @@ public struct Defaults {
             
             return value
         }
-        set {
+        nonmutating set {
             let key = Key("", default: ())[keyPath: keyPath]
             
             userDefaults.set(newValue, forKey: key.identifier)
+        }
+    }
+    
+    /// Use dynamic member to modify or retrieve a defaults.
+    ///
+    /// This is an implementation detail, and you should not interact with this subscript directly. You should access the values as instance properties.
+    ///
+    /// ```swift
+    /// let enabled = Defaults.standard.memorySaver
+    /// ```
+    ///
+    /// An object is removed when you set the new value as `nil`.
+    public subscript<T>(dynamicMember keyPath: KeyPath<Defaults.Key<Void>, Defaults.Key<T?>>) -> T? {
+        get {
+            let key = Key("", default: ())[keyPath: keyPath]
+            
+            let object = userDefaults.object(forKey: key.identifier)
+            if object == nil { return key.defaultValue }
+            
+            guard let value = object as? T else {
+                preconditionFailure("Type associated with \"\(key.identifier)\" mismatch; expected: \(T.self), actual: \(String(describing: type(of: object!))).")
+            }
+            
+            return value
+        }
+        nonmutating set {
+            let key = Key("", default: ())[keyPath: keyPath]
+            
+            if newValue == nil {
+                userDefaults.removeObject(forKey: key.identifier)
+            } else {
+                userDefaults.set(newValue, forKey: key.identifier)
+            }
         }
     }
 }

@@ -9,6 +9,25 @@
 extension Defaults {
     
     /// A key for defaults lookup
+    ///
+    /// To declare a user default key, you create an extension on`Defaults.Key`.
+    ///
+    /// ```swift
+    /// extension Defaults.Key where Value == Void {
+    ///
+    ///     /// Indicates whether memory saver is enabled.
+    ///     var memorySaver: Defaults.Key<Bool> {
+    ///         .init("memory_saver", default: false)
+    ///     }
+    /// }
+    /// ```
+    ///
+    /// > Note:
+    /// > The signature for the sources of extension should be
+    /// > ```swift
+    /// > extension Defaults.Key where Value == Void
+    /// > ```
+    /// > The keys are defined as instance properties to support Xcode's autocomplete feature for `@dynamicMemberLookup`.
     public struct Key<Value> {
         
         @usableFromInline
