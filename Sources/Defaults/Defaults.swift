@@ -12,7 +12,7 @@ import Foundation
 ///
 /// To declare a user default key
 /// ```swift
-/// extension Defaults.Key where Value == Void {
+/// extension Defaults.Keys {
 ///     var <#identifier#>: Defaults.Key<<#Type#>> {
 ///         .init(<#identifier#>, default: <#default#>)
 ///     }
@@ -55,8 +55,8 @@ public struct Defaults {
     /// > ```swift
     /// > Defaults.standard.password = nil
     /// > ```
-    public func remove<T>(_ keyPath: KeyPath<Defaults.Key<Void>, Defaults.Key<T>>) {
-        let key = Key("", default: ())[keyPath: keyPath]
+    public func remove<T>(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<T>>) {
+        let key = Keys()[keyPath: keyPath]
         userDefaults.removeObject(forKey: key.identifier)
     }
     
@@ -68,9 +68,10 @@ public struct Defaults {
     /// ```swift
     /// let enabled = Defaults.standard.memorySaver
     /// ```
-    public subscript<T>(dynamicMember keyPath: KeyPath<Defaults.Key<Void>, Defaults.Key<T>>) -> T {
+    @_disfavoredOverload
+    public subscript<T>(dynamicMember keyPath: KeyPath<Defaults.Keys, Defaults.Key<T>>) -> T {
         get {
-            let key = Key("", default: ())[keyPath: keyPath]
+            let key = Keys()[keyPath: keyPath]
             
             let object = userDefaults.object(forKey: key.identifier)
             if object == nil { return key.defaultValue }
@@ -82,7 +83,7 @@ public struct Defaults {
             return value
         }
         nonmutating set {
-            let key = Key("", default: ())[keyPath: keyPath]
+            let key = Keys()[keyPath: keyPath]
             
             userDefaults.set(newValue, forKey: key.identifier)
         }
@@ -97,9 +98,9 @@ public struct Defaults {
     /// ```
     ///
     /// An object is removed when you set the new value as `nil`.
-    public subscript<T>(dynamicMember keyPath: KeyPath<Defaults.Key<Void>, Defaults.Key<T?>>) -> T? {
+    public subscript<T>(dynamicMember keyPath: KeyPath<Defaults.Keys, Defaults.Key<T?>>) -> T? {
         get {
-            let key = Key("", default: ())[keyPath: keyPath]
+            let key = Keys()[keyPath: keyPath]
             
             let object = userDefaults.object(forKey: key.identifier)
             if object == nil { return key.defaultValue }
@@ -111,7 +112,7 @@ public struct Defaults {
             return value
         }
         nonmutating set {
-            let key = Key("", default: ())[keyPath: keyPath]
+            let key = Keys()[keyPath: keyPath]
             
             if newValue == nil {
                 userDefaults.removeObject(forKey: key.identifier)

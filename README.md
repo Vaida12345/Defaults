@@ -10,10 +10,10 @@ This package utilizes a singleton named `standard` to represent the default suit
 let enabled = Defaults.standard.memorySaver
 ```
 
-To declare a user default key, you create an extension on`Defaults.Key`.
+To declare a user default key, you create an extension on `Defaults.Keys`.
 
 ```swift
-extension Defaults.Key where Value == Void {
+extension Defaults.Keys {
 
     /// Indicates whether memory saver is enabled.
     var memorySaver: Defaults.Key<Bool> {
@@ -22,7 +22,7 @@ extension Defaults.Key where Value == Void {
 }
 ```
 
-Please note that the signature for the sources of extension should be `Defaults.Key where Value == Void`. The keys are defined as instance properties to support Xcode's autocomplete feature for `@dynamicMemberLookup`.
+Please note that the keys are defined as instance properties to support Xcode's autocomplete feature for `@dynamicMemberLookup`.
 
 
 ### Integration with SwiftUI

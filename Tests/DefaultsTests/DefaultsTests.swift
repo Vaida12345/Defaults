@@ -10,7 +10,7 @@ import SwiftUI
 import Defaults
 
 
-private extension Defaults.Key where Value == Void {
+private extension Defaults.Keys {
     
     var password: Defaults.Key<String?> {
         .init("password")
