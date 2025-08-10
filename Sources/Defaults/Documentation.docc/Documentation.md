@@ -34,6 +34,8 @@ You can retrieve and observe defaults using `AppStorage`, similar to how you can
 @AppStorage(\.memorySaver) private var enabled
 ```
 
+- Warning: Optional value must have a default value of `nil` to be used in AppStorage.
+
 ## Topics
 
 ### Structures

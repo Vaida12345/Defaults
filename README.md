@@ -33,6 +33,8 @@ You can retrieve and observe defaults using `AppStorage`, similar to how you can
 @AppStorage(\.memorySaver) private var enabled
 ```
 
+- Warning: Optional value must have a default value of `nil` to be used in AppStorage.
+
 ## Getting Started
 
 `Defaults` uses [Swift Package Manager](https://www.swift.org/documentation/package-manager/) as its build tool. If you want to import in your own project, it's as simple as adding a `dependencies` clause to your `Package.swift`:
