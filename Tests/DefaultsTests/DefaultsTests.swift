@@ -10,6 +10,12 @@ import SwiftUI
 import Defaults
 
 
+enum MyEnum: String, CaseIterable {
+    case first
+    case second
+}
+
+
 private extension Defaults.Keys {
     
     var password: Defaults.Key<String?> {
@@ -18,6 +24,14 @@ private extension Defaults.Keys {
     
     var enabled: Defaults.Key<Bool> {
         .init("enabled", default: false)
+    }
+    
+    var rawRepresentable: Defaults.Key<MyEnum?> {
+        .init("rawPresentable")
+    }
+    
+    var rawRep: Defaults.Key<MyEnum> {
+        .init("rawP", default: .first)
     }
     
 }
@@ -76,5 +90,21 @@ private extension Defaults.Keys {
         try #require(Defaults.standard.password == "123456")
         Defaults.standard.password = nil
         #expect(Defaults.standard.password == nil)
+    }
+    
+    @Test func raw() throws {
+        Defaults.standard.rawRepresentable = .first
+        #expect(Defaults.standard.rawRepresentable == .first)
+        Defaults.standard.rawRepresentable = .second
+        #expect(Defaults.standard.rawRepresentable == .second)
+        Defaults.standard.rawRepresentable = nil
+        #expect(Defaults.standard.rawRepresentable == nil)
+        
+        Defaults.standard.rawRep = .first
+        #expect(Defaults.standard.rawRep == .first)
+        Defaults.standard.rawRep = .second
+        #expect(Defaults.standard.rawRep == .second)
+        Defaults.standard.remove(\.rawRep)
+        #expect(Defaults.standard.rawRep == .first)
     }
 }

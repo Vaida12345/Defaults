@@ -32,7 +32,7 @@ import Foundation
 @dynamicMemberLookup
 public struct Defaults {
     
-    private let userDefaults: UserDefaults
+    internal let userDefaults: UserDefaults
     
     /// A global instance of `Defaults` configured to search the current application's search list.
     public static var standard: Defaults {
@@ -61,6 +61,20 @@ public struct Defaults {
     }
     
     
+    internal func load<T, I>(keyPath: KeyPath<Defaults.Keys, Defaults.Key<T>>, intermediate: I.Type, returnClosure: (_ intermediate: I) -> T) -> T {
+        let key = Keys()[keyPath: keyPath]
+        
+        let object = userDefaults.object(forKey: key.identifier)
+        if object == nil { return key.defaultValue }
+        
+        guard let value = object as? I else {
+            preconditionFailure("Type associated with \"\(key.identifier)\" mismatch; expected: \(I.self), actual: \(String(describing: type(of: object!))).")
+        }
+        
+        return returnClosure(value)
+    }
+    
+    
     /// Use dynamic member to modify or retrieve a defaults.
     ///
     /// This is an implementation detail, and you should not interact with this subscript directly. You should access the values as instance properties.
@@ -71,20 +85,10 @@ public struct Defaults {
     @_disfavoredOverload
     public subscript<T>(dynamicMember keyPath: KeyPath<Defaults.Keys, Defaults.Key<T>>) -> T {
         get {
-            let key = Keys()[keyPath: keyPath]
-            
-            let object = userDefaults.object(forKey: key.identifier)
-            if object == nil { return key.defaultValue }
-            
-            guard let value = object as? T else {
-                preconditionFailure("Type associated with \"\(key.identifier)\" mismatch; expected: \(T.self), actual: \(String(describing: type(of: object!))).")
-            }
-            
-            return value
+            self.load(keyPath: keyPath, intermediate: T.self, returnClosure: \.self)
         }
         nonmutating set {
             let key = Keys()[keyPath: keyPath]
-            
             userDefaults.set(newValue, forKey: key.identifier)
         }
     }
@@ -100,16 +104,7 @@ public struct Defaults {
     /// An object is removed when you set the new value as `nil`.
     public subscript<T>(dynamicMember keyPath: KeyPath<Defaults.Keys, Defaults.Key<T?>>) -> T? {
         get {
-            let key = Keys()[keyPath: keyPath]
-            
-            let object = userDefaults.object(forKey: key.identifier)
-            if object == nil { return key.defaultValue }
-            
-            guard let value = object as? T else {
-                preconditionFailure("Type associated with \"\(key.identifier)\" mismatch; expected: \(T.self), actual: \(String(describing: type(of: object!))).")
-            }
-            
-            return value
+            self.load(keyPath: keyPath, intermediate: T.self, returnClosure: \.self)
         }
         nonmutating set {
             let key = Keys()[keyPath: keyPath]
