@@ -24,6 +24,9 @@ extension Defaults {
     ///
     /// > Note:
     /// > The keys are defined as instance properties to support Xcode's autocomplete feature for `@dynamicMemberLookup`.
+    ///
+    /// > Important:
+    /// > `Value` must be a type supported by `UserDefaults`: `Data`, `String`, `Int`, `Double`, `Float`, `Bool`, `URL`, `Date`, `RawRepresentable` where `RawValue` is one of those types, or an optional of any of those. Other types will compile but crash at runtime.
     public struct Key<Value> {
         
         @usableFromInline

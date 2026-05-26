@@ -11,17 +11,35 @@ extension Defaults {
     @_disfavoredOverload
     public subscript<T>(dynamicMember keyPath: KeyPath<Defaults.Keys, Defaults.Key<T>>) -> T where T: RawRepresentable {
         get {
-            return self.load(keyPath: keyPath, intermediate: T.RawValue.self, returnClosure: { T(rawValue: $0)! })
+            let key = Keys()[keyPath: keyPath]
+            let object = userDefaults.object(forKey: key.identifier)
+            if object == nil { return key.defaultValue }
+            guard let rawValue = object as? T.RawValue else {
+                preconditionFailure("Type associated with \"\(key.identifier)\" mismatch; expected: \(T.RawValue.self), actual: \(String(describing: type(of: object!))).")
+            }
+            guard let value = T(rawValue: rawValue) else {
+                preconditionFailure("Cannot initialize \(T.self) from raw value \"\(rawValue)\" stored for key \"\(key.identifier)\".")
+            }
+            return value
         }
         nonmutating set {
             let key = Keys()[keyPath: keyPath]
             userDefaults.set(newValue.rawValue, forKey: key.identifier)
         }
     }
-    
+
     public subscript<T>(dynamicMember keyPath: KeyPath<Defaults.Keys, Defaults.Key<T?>>) -> T? where T: RawRepresentable {
         get {
-            return self.load(keyPath: keyPath, intermediate: T.RawValue.self, returnClosure: { T(rawValue: $0)! })
+            let key = Keys()[keyPath: keyPath]
+            let object = userDefaults.object(forKey: key.identifier)
+            if object == nil { return key.defaultValue }
+            guard let rawValue = object as? T.RawValue else {
+                preconditionFailure("Type associated with \"\(key.identifier)\" mismatch; expected: \(T.RawValue.self), actual: \(String(describing: type(of: object!))).")
+            }
+            guard let value = T(rawValue: rawValue) else {
+                preconditionFailure("Cannot initialize \(T.self) from raw value \"\(rawValue)\" stored for key \"\(key.identifier)\".")
+            }
+            return value
         }
         nonmutating set {
             let key = Keys()[keyPath: keyPath]

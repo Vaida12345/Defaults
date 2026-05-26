@@ -112,6 +112,7 @@ extension AppStorage where Value: ExpressibleByNilLiteral {
     @available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)
     public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>) where Value == Date? {
         let key = Defaults.Keys()[keyPath: keyPath]
+        precondition(key.defaultValue == nil, "Optional value must have a default value of `nil` to be used in AppStorage.")
         self.init(key.identifier)
     }
     
