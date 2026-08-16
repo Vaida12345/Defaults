@@ -36,6 +36,8 @@ You can retrieve and observe defaults using `AppStorage`, similar to how you can
 
 - Warning: Optional value must have a default value of `nil` to be used in AppStorage.
 
+- Tip: Access the default this way only if you want the view to be invalidated when the default changes.
+
 ## Topics
 
 ### Structures
