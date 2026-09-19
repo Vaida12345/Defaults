@@ -1,6 +1,6 @@
 # Defaults
 
-A type-safe wrapper to `UserDefaults`.
+A type-safe wrapper for `UserDefaults`.
 
 ## Type-safe user defaults
 
