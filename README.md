@@ -54,4 +54,4 @@ https://github.com/Vaida12345/Defaults.git
 
 ## Documentation
 
-This package uses [DocC](https://www.swift.org/documentation/docc/) for documentation.
+This package uses [DocC](https://www.swift.org/documentation/docc/) for documentation, view on [Github](https://vaida12345.github.io/Defaults/documentation/defaults).
