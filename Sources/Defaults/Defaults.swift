@@ -9,9 +9,6 @@ import Foundation
 import OSLog
 
 
-private let typeCheckerLog = OSLog(subsystem: "Defaults", category: "TypeChecker")
-
-
 /// A type-safe wrapper to `UserDefaults`.
 ///
 /// To declare a user default key
@@ -37,6 +34,7 @@ private let typeCheckerLog = OSLog(subsystem: "Defaults", category: "TypeChecker
 public struct Defaults {
     
     internal let userDefaults: UserDefaults
+    internal static let typeCheckerLog = OSLog(subsystem: "Defaults", category: "TypeChecker")
     
     /// A global instance of `Defaults` configured to search the current application's search list.
     public static var standard: Defaults {
@@ -74,7 +72,7 @@ public struct Defaults {
         guard let value = object as? I else {
             os_log(
                 "The value stored for key \"%{public}@\" has type %{public}@, but %{public}@ was expected. This can result from reusing an identifier. Returning the default value.",
-                log: typeCheckerLog,
+                log: Self.typeCheckerLog,
                 type: .error,
                 key.identifier,
                 String(describing: type(of: object!)),

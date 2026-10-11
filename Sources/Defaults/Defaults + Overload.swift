@@ -8,9 +8,6 @@
 import OSLog
 
 
-private let typeCheckerLog = OSLog(subsystem: "Defaults", category: "TypeChecker")
-
-
 extension Defaults {
     
     @_disfavoredOverload
@@ -22,7 +19,7 @@ extension Defaults {
             guard let rawValue = object as? T.RawValue else {
                 os_log(
                     "The value stored for key \"%{public}@\" has type %{public}@, but %{public}@ was expected. This can result from reusing an identifier. Returning the default value.",
-                    log: typeCheckerLog,
+                    log: Defaults.typeCheckerLog,
                     type: .error,
                     key.identifier,
                     String(describing: type(of: object!)),
@@ -33,7 +30,7 @@ extension Defaults {
             guard let value = T(rawValue: rawValue) else {
                 os_log(
                     "The raw value \"%{private}@\" stored for key \"%{public}@\" cannot initialize %{public}@. Returning the default value.",
-                    log: typeCheckerLog,
+                    log: Defaults.typeCheckerLog,
                     type: .error,
                     String(describing: rawValue),
                     key.identifier,
@@ -55,14 +52,20 @@ extension Defaults {
             let object = userDefaults.object(forKey: key.identifier)
             if object == nil { return key.defaultValue }
             guard let rawValue = object as? T.RawValue else {
-                let logger = Logger(subsystem: "Defaults", category: "TypeChecker")
-                logger.warning("The value stored for key \"\(key.identifier)\" has type \(String(describing: type(of: object!))), but \(T.RawValue.self) was expected. This can result from reusing an identifier. Returning the default value.")
+                os_log(
+                    "The value stored for key \"%{public}@\" has type %{public}@, but %{public}@ was expected. This can result from reusing an identifier. Returning the default value.",
+                    log: Defaults.typeCheckerLog,
+                    type: .error,
+                    key.identifier,
+                    String(describing: type(of: object!)),
+                    String(describing: T.RawValue.self)
+                )
                 return key.defaultValue
             }
             guard let value = T(rawValue: rawValue) else {
                 os_log(
                     "The raw value \"%{private}@\" stored for key \"%{public}@\" cannot initialize %{public}@. Returning the default value.",
-                    log: typeCheckerLog,
+                    log: Defaults.typeCheckerLog,
                     type: .error,
                     String(describing: rawValue),
                     key.identifier,
