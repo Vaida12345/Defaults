@@ -31,6 +31,10 @@ private extension Defaults.Keys {
         .init("defaultPassword", default: "123456")
     }
 
+    var suitePassword: Defaults.Key<String?> {
+        .init("suitePassword", default: "654321")
+    }
+
     var enabled: Defaults.Key<Bool> {
         .init("enabled", default: false)
     }
@@ -101,6 +105,28 @@ private extension Defaults.Keys {
 
         #expect(password == "123456")
         #expect(UserDefaults.standard.string(forKey: "defaultPassword") == "123456")
+    }
+
+    /// Verifies that an optional key-path app storage value is initialized in its specified suite.
+    @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+    @Test func optionalSwiftUIDefaultInSuite() {
+        guard let store = UserDefaults(suiteName: "appStorageSuite") else {
+            Issue.record("Failed to create app storage suite")
+            return
+        }
+
+        store.removeObject(forKey: "suitePassword")
+        UserDefaults.standard.removeObject(forKey: "suitePassword")
+        defer {
+            store.removeObject(forKey: "suitePassword")
+            UserDefaults.standard.removeObject(forKey: "suitePassword")
+        }
+
+        @AppStorage(\.suitePassword, store: store) var password: String?
+
+        #expect(password == "654321")
+        #expect(store.string(forKey: "suitePassword") == "654321")
+        #expect(UserDefaults.standard.object(forKey: "suitePassword") == nil)
     }
     
     
