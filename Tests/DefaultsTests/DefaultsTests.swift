@@ -43,6 +43,11 @@ private extension Defaults.Keys {
         .init("rawRepresentable")
     }
     
+    // NOTE: do not change this.
+    var rawRepresentableOptionalWithDefault: Defaults.Key<MyEnum?> {
+        .init("rawRepresentableOptional", default: .first)
+    }
+    
     var rawRep: Defaults.Key<MyEnum> {
         .init("rawP", default: .first)
     }
@@ -93,6 +98,12 @@ private extension Defaults.Keys {
         @AppStorage(\.password) var newPassword
         
         #expect(oldPassword == newPassword)
+    }
+    
+    @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+    @Test() func swiftuiRawRepresentableTest() {
+        @AppStorage(\.rawRepresentableOptionalWithDefault) var rawRepresentableOptionalWithDefault
+        #expect(rawRepresentableOptionalWithDefault == .first)
     }
 
     /// Verifies that an optional key-path app storage value is initialized with its non-nil default.
