@@ -133,7 +133,7 @@ extension AppStorage {
         let key = Defaults.Keys()[keyPath: keyPath]
 
         if store.object(forKey: key.identifier) == nil {
-            store.set(key.defaultValue, forKey: key.identifier)
+            Defaults(userDefaults: store)[dynamicMember: keyPath] = key.defaultValue
         }
 
         return key.identifier
