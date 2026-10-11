@@ -27,6 +27,10 @@ private extension Defaults.Keys {
         .init("password")
     }
     
+    var defaultPassword: Defaults.Key<String?> {
+        .init("defaultPassword", default: "123456")
+    }
+
     var enabled: Defaults.Key<Bool> {
         .init("enabled", default: false)
     }
@@ -82,14 +86,21 @@ private extension Defaults.Keys {
         Defaults.standard.password = defaultValue
         
         @AppStorage("password") var oldPassword: String?
-        var old = ""
-        dump(_oldPassword, to: &old)
-        
         @AppStorage(\.password) var newPassword
-        var new = ""
-        dump(_newPassword, to: &new)
         
-        #expect(old == new)
+        #expect(oldPassword == newPassword)
+    }
+
+    /// Verifies that an optional key-path app storage value is initialized with its non-nil default.
+    @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+    @Test func optionalSwiftUIDefault() {
+        UserDefaults.standard.removeObject(forKey: "defaultPassword")
+        defer { UserDefaults.standard.removeObject(forKey: "defaultPassword") }
+
+        @AppStorage(\.defaultPassword) var password: String?
+
+        #expect(password == "123456")
+        #expect(UserDefaults.standard.string(forKey: "defaultPassword") == "123456")
     }
     
     
