@@ -4,13 +4,13 @@ A type-safe wrapper for `UserDefaults`.
 
 ## Type-safe user defaults
 
-This package utilizes a singleton named `standard` to represent the default suite of user preferences. By using this singleton, you can access your stored user preferences as instance properties.
+This package utilizes a singleton named [`standard`](https://vaida12345.github.io/Defaults/documentation/defaults/defaults/standard) to represent the default suite of user preferences. By using this singleton, you can access your stored user preferences as instance properties.
 
 ```swift
 let enabled = Defaults.standard.memorySaver
 ```
 
-To declare a user default key, you create an extension on `Defaults.Keys`.
+To declare a user default key, you create an extension on [`Defaults.Keys`](https://vaida12345.github.io/Defaults/documentation/defaults/defaults/keys).
 
 ```swift
 extension Defaults.Keys {
