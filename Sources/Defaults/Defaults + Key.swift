@@ -42,7 +42,7 @@ extension Defaults {
         ///   - identifier: The identifier for the given key.
         ///   - defaultValue: The default value for the given key. The default value will be used when there does not exist a value associated with `identifier`.
         ///
-        /// - Warning: You need to ensure the `identifier` is used uniquely. `preconditionError` will be thrown if the type associated with a key is unexpected.
+        /// - Warning: Each identifier must be unique. If a value stored under this identifier has an unexpected type, Defaults logs a warning and returns this key's default value.
         @inlinable
         public init(_ identifier: String, default defaultValue: Value) {
             self.identifier = identifier
@@ -54,7 +54,7 @@ extension Defaults {
         /// - Parameters:
         ///   - identifier: The identifier for the given key.
         ///
-        /// - Warning: You need to ensure the `identifier` is used uniquely. `preconditionError` will be thrown if the type associated with a key is unexpected.
+        /// - Warning: Please ensure the `identifier` is used uniquely.
         @inlinable
         public init(_ identifier: String) where Value: ExpressibleByNilLiteral {
             self.identifier = identifier

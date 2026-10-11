@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 
 
 /// A type-safe wrapper to `UserDefaults`.
@@ -68,7 +69,9 @@ public struct Defaults {
         if object == nil { return key.defaultValue }
         
         guard let value = object as? I else {
-            preconditionFailure("Type associated with \"\(key.identifier)\" mismatch; expected: \(I.self), actual: \(String(describing: type(of: object!))).")
+            let logger = Logger(subsystem: "Defaults", category: "TypeChecker")
+            logger.warning("The value stored for key \"\(key.identifier)\" has type \(String(describing: type(of: object!))), but \(I.self) was expected. This can result from reusing an identifier. Returning the default value.")
+            return key.defaultValue
         }
         
         return returnClosure(value)
