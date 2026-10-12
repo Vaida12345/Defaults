@@ -43,8 +43,23 @@ extension Defaults {
         ///   - defaultValue: The default value for the given key. The default value will be used when there does not exist a value associated with `identifier`.
         ///
         /// - Warning: Each identifier must be unique. If a value stored under this identifier has an unexpected type, Defaults logs a warning and returns this key's default value.
+        @_disfavoredOverload
         @inlinable
         public init(_ identifier: String, default defaultValue: Value) {
+            self.identifier = identifier
+            self.defaultValue = defaultValue
+        }
+        
+        /// Initialize a new defaults key.
+        ///
+        /// - Parameters:
+        ///   - identifier: The identifier for the given key.
+        ///   - defaultValue: The default value for the given key. The default value will be used when there does not exist a value associated with `identifier`.
+        ///
+        /// - Warning: Each identifier must be unique. If a value stored under this identifier has an unexpected type, Defaults logs a warning and returns this key's default value.
+        @available(*, deprecated, renamed: "init(_:)", message: "An optional key with a non-nil default cannot return nil. Use a non-optional value type, or create the optional key with init(_:) instead.")
+        @inlinable
+        public init<T>(_ identifier: String, default defaultValue: Value) where Value == Optional<T> {
             self.identifier = identifier
             self.defaultValue = defaultValue
         }
@@ -56,7 +71,7 @@ extension Defaults {
         ///
         /// - Warning: Please ensure the `identifier` is used uniquely.
         @inlinable
-        public init(_ identifier: String) where Value: ExpressibleByNilLiteral {
+        public init<T>(_ identifier: String) where Value == Optional<T> {
             self.identifier = identifier
             self.defaultValue = nil
         }

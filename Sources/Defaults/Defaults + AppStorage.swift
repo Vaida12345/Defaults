@@ -7,6 +7,7 @@
 
 #if canImport(SwiftUI)
 import SwiftUI
+import os
 
 
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
@@ -66,166 +67,66 @@ extension AppStorage {
         let key = Defaults.Keys()[keyPath: keyPath]
         self.init(wrappedValue: key.defaultValue, key.identifier)
     }
-
-    /// Creates a property that can read and write to a boolean user default in the specified store.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == Bool {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        self.init(wrappedValue: key.defaultValue, key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to an integer user default in the specified store.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == Int {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        self.init(wrappedValue: key.defaultValue, key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to a double user default in the specified store.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == Double {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        self.init(wrappedValue: key.defaultValue, key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to a string user default in the specified store.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == String {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        self.init(wrappedValue: key.defaultValue, key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to a URL user default in the specified store.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == URL {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        self.init(wrappedValue: key.defaultValue, key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to a date user default in the specified store.
-    @available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == Date {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        self.init(wrappedValue: key.defaultValue, key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to a user default as data in the specified store.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == Data {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        self.init(wrappedValue: key.defaultValue, key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to an integer user default in the specified store, transforming that to `RawRepresentable` data type.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value : RawRepresentable, Value.RawValue == Int {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        self.init(wrappedValue: key.defaultValue, key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to a string user default in the specified store, transforming that to `RawRepresentable` data type.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value : RawRepresentable, Value.RawValue == String {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        self.init(wrappedValue: key.defaultValue, key.identifier, store: store)
-    }
     
 }
 
 
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 extension AppStorage {
+    
+    private static func logUnpresentableNoneNil(identifier: String) {
+        let logger = Logger(subsystem: "Defaults", category: "AppStorage")
+        logger.warning("The Defaults key '\(identifier)' has a non-nil default for an optional value and is used with AppStorage. AppStorage ignores the default value.")
+    }
 
     /// Creates a property that can read and write to a boolean user default.
     public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>) where Value == Bool? {
-        self.init(keyPath, store: .standard)
+        let key = Defaults.Keys()[keyPath: keyPath]
+        if key.defaultValue != nil { AppStorage.logUnpresentableNoneNil(identifier: key.identifier) }
+        self.init(key.identifier)
     }
     
     /// Creates a property that can read and write to an integer user default.
     public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>) where Value == Int? {
-        self.init(keyPath, store: .standard)
+        let key = Defaults.Keys()[keyPath: keyPath]
+        if key.defaultValue != nil { AppStorage.logUnpresentableNoneNil(identifier: key.identifier) }
+        self.init(key.identifier)
     }
     
     /// Creates a property that can read and write to a double user default.
     public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>) where Value == Double? {
-        self.init(keyPath, store: .standard)
+        let key = Defaults.Keys()[keyPath: keyPath]
+        if key.defaultValue != nil { AppStorage.logUnpresentableNoneNil(identifier: key.identifier) }
+        self.init(key.identifier)
     }
     
     /// Creates a property that can read and write to a string user default.
     public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>) where Value == String? {
-        self.init(keyPath, store: .standard)
+        let key = Defaults.Keys()[keyPath: keyPath]
+        if key.defaultValue != nil { AppStorage.logUnpresentableNoneNil(identifier: key.identifier) }
+        self.init(key.identifier)
     }
     
     /// Creates a property that can read and write to a url user default.
     public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>) where Value == URL? {
-        self.init(keyPath, store: .standard)
+        let key = Defaults.Keys()[keyPath: keyPath]
+        if key.defaultValue != nil { AppStorage.logUnpresentableNoneNil(identifier: key.identifier) }
+        self.init(key.identifier)
     }
     
     /// Creates a property that can read and write to a date user default.
     @available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)
     public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>) where Value == Date? {
-        self.init(keyPath, store: .standard)
+        let key = Defaults.Keys()[keyPath: keyPath]
+        if key.defaultValue != nil { AppStorage.logUnpresentableNoneNil(identifier: key.identifier) }
+        self.init(key.identifier)
     }
     
     /// Creates a property that can read and write to a user default as data.
     public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>) where Value == Data? {
-        self.init(keyPath, store: .standard)
-    }
-
-    /// Creates a property that can read and write to a boolean user default in the specified store.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == Bool? {
         let key = Defaults.Keys()[keyPath: keyPath]
-        if store.object(forKey: key.identifier) == nil {
-            Defaults(userDefaults: store)[dynamicMember: keyPath] = key.defaultValue
-        }
-        self.init(key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to an integer user default in the specified store.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == Int? {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        if store.object(forKey: key.identifier) == nil {
-            Defaults(userDefaults: store)[dynamicMember: keyPath] = key.defaultValue
-        }
-        self.init(key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to a double user default in the specified store.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == Double? {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        if store.object(forKey: key.identifier) == nil {
-            Defaults(userDefaults: store)[dynamicMember: keyPath] = key.defaultValue
-        }
-        self.init(key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to a string user default in the specified store.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == String? {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        if store.object(forKey: key.identifier) == nil {
-            Defaults(userDefaults: store)[dynamicMember: keyPath] = key.defaultValue
-        }
-        self.init(key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to a URL user default in the specified store.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == URL? {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        if store.object(forKey: key.identifier) == nil {
-            Defaults(userDefaults: store)[dynamicMember: keyPath] = key.defaultValue
-        }
-        self.init(key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to a date user default in the specified store.
-    @available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == Date? {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        if store.object(forKey: key.identifier) == nil {
-            Defaults(userDefaults: store)[dynamicMember: keyPath] = key.defaultValue
-        }
-        self.init(key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to a user default as data in the specified store.
-    public init(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == Data? {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        if store.object(forKey: key.identifier) == nil {
-            Defaults(userDefaults: store)[dynamicMember: keyPath] = key.defaultValue
-        }
-        self.init(key.identifier, store: store)
+        if key.defaultValue != nil { AppStorage.logUnpresentableNoneNil(identifier: key.identifier) }
+        self.init(key.identifier)
     }
 }
 
@@ -235,30 +136,16 @@ extension AppStorage {
     
     /// Creates a property that can read and write to an integer user default, transforming that to `RawRepresentable` data type.
     public init<R>(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>) where Value == R?, R : RawRepresentable, R.RawValue == Int {
-        self.init(keyPath, store: .standard)
+        let key = Defaults.Keys()[keyPath: keyPath]
+        if key.defaultValue != nil { AppStorage.logUnpresentableNoneNil(identifier: key.identifier) }
+        self.init(key.identifier)
     }
     
     /// Creates a property that can read and write to a string user default, transforming that to `RawRepresentable` data type.
     public init<R>(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>) where Value == R?, R : RawRepresentable, R.RawValue == String {
-        self.init(keyPath, store: .standard)
-    }
-
-    /// Creates a property that can read and write to an integer user default in the specified store, transforming that to `RawRepresentable` data type.
-    public init<R>(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == R?, R : RawRepresentable, R.RawValue == Int {
         let key = Defaults.Keys()[keyPath: keyPath]
-        if store.object(forKey: key.identifier) == nil {
-            Defaults(userDefaults: store)[dynamicMember: keyPath] = key.defaultValue
-        }
-        self.init(key.identifier, store: store)
-    }
-
-    /// Creates a property that can read and write to a string user default in the specified store, transforming that to `RawRepresentable` data type.
-    public init<R>(_ keyPath: KeyPath<Defaults.Keys, Defaults.Key<Value>>, store: UserDefaults) where Value == R?, R : RawRepresentable, R.RawValue == String {
-        let key = Defaults.Keys()[keyPath: keyPath]
-        if store.object(forKey: key.identifier) == nil {
-            Defaults(userDefaults: store)[dynamicMember: keyPath] = key.defaultValue
-        }
-        self.init(key.identifier, store: store)
+        if key.defaultValue != nil { AppStorage.logUnpresentableNoneNil(identifier: key.identifier) }
+        self.init(key.identifier)
     }
     
 }
